@@ -1,14 +1,6 @@
-import streamlit as st
 import os
-import requests
-from bs4 import BeautifulSoup
-from tqdm import tqdm
-import re
-import psycopg2
-import json
-import math
+import streamlit as st
 
-# Інші імпорти
 # st.sidebar.selectbox  - anotehr option
 languages = ["russian", "ukrainian", "english", "polish", "turkish", "italian", "dutch",
             "serbian", "german", "czech", "french", "bulgarian", "spanish", "romanian"]
