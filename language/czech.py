@@ -215,3 +215,7 @@ if st.sidebar.button("RUN"):
         for article_id, article, cosine_similarity in top_2_relevant_articles:
             st.write(f"\n\nThe article with id {article_id} has a similarity value {cosine_similarity}\n\n The Article:\n\n\n{article}")
     close_database_connection(connection)
+
+# Очистити поле вводу при зміні мови
+if st.sidebar.button("Clear Input"):
+    input_string = ""
