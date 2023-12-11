@@ -11,6 +11,9 @@ st.title("Fake Detection")
 st.sidebar.header("Input")
 
 # Очищення поля вводу при зміні мови
+if 'language' not in st.session_state:
+    st.session_state.language = ''
+
 if st.session_state.language != language:
     st.session_state.language = language
     input_string = ""
