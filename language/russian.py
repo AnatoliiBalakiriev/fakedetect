@@ -41,7 +41,7 @@ def check_fakeness(article_text):
 def insert_data(conn, data):
     # Запит на вставку даних в таблицю
     insert_query = """
-    INSERT INTO pgml.stopfakes_rus (title, article, url, date, relative_urls, source_url, anchor_texts, relative_images, fakeness)
+    INSERT INTO pgml.stopfakes_ru (title, article, url, date, relative_urls, source_url, anchor_texts, relative_images, fakeness)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
     """
     with conn.cursor() as cursor:
@@ -154,14 +154,14 @@ if __name__ == '__main__':
 def create_embeddings_for_articles(conn):
     with conn.cursor() as cursor:
         # Отримання списку статей з бази даних
-        cursor.execute("SELECT id, title || article AS title_article FROM pgml.stopfakes_rus WHERE embed IS NULL;")
+        cursor.execute("SELECT id, title || article AS title_article FROM pgml.stopfakes_ru WHERE embed IS NULL;")
         articles = cursor.fetchall()
 
         for article_id, article in tqdm(articles, desc="Creating Embeddings"):
 
             # Оновлення запису в таблиці з вектором
             cursor.execute("""
-                UPDATE pgml.stopfakes_rus
+                UPDATE pgml.stopfakes_ru
                 SET embed = pgml.embed('intfloat/multilingual-e5-large', %s)::vector(1024)
                 WHERE id = %s;
             """, (article, article_id,))
@@ -189,7 +189,7 @@ def get_top_2_relevant_articles(conn, query):
                 id,
                 article,
                 1 - (embed <=> (SELECT query_vector FROM request)) AS cosine_similarity
-            FROM pgml.stopfakes_rus
+            FROM pgml.stopfakes_ru
             ORDER BY cosine_similarity DESC
             LIMIT 2;
         """, (query,))
