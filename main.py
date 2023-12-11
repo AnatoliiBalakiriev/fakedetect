@@ -10,7 +10,7 @@ import math
 
 # Інші імпорти
 
-language = st.sidebar.selectbox("Select Language", ["ru", "uk", "en", "pl", "tr", "it", "nl", "sr", "de", "cz", "fr", "bg", "es", "ro"])
+language = st.sidebar.selectbox("Select Language", ["russian", "ukrainain", "english", "polish", "turkish", "italian", "dutch", "serbian", "german", "czech", "french", "bolgarian", "spanish", "romanian"])
 
 # Перевірка, чи існує файл для обраної мови
 language_file_path = os.path.join("language", f"{language}.py")
