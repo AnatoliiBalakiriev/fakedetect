@@ -1,0 +1,7 @@
+streamlit
+requests
+bs4
+beautifulsoup4
+psycopg2-binary
+tqdm
+numpy
