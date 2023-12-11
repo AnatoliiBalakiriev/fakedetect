@@ -199,12 +199,19 @@ def get_top_2_relevant_articles(conn, query):
 
     return top_2_relevant_articles
 
-query = "German Defense Minister refused to consider Ukraine an ally"
-connection = create_database_connection()
-if connection:
-    top_2_relevant_articles = get_top_2_relevant_articles(connection, query)
-    close_database_connection(connection)
+st.title("Fake Detection")
+st.sidebar.header("Input")
+
+input_string = st.sidebar.text_input("Input your request and press the RUN button or press Enter")
+
+if st.sidebar.button("RUN"):
+    # Отримання оброблених документів з бази даних
+    connection = create_database_connection()
     
-# Виведення результатів
-for article_id, article, cosine_similarity in top_2_relevant_articles:
-    print(f"\n\nThe article with id {article_id} has a similarity value {cosine_similarity}\n\n The Article:\n{article}")
+    if connection:
+        top_2_relevant_articles = get_top_2_relevant_articles(connection, input_string)
+    
+        # Виведення результатів
+        for article_id, article, cosine_similarity in top_2_relevant_articles:
+            st.write(f"\n\nThe article with id {article_id} has a similarity value {cosine_similarity}\n\n The Article:\n\n\n{article}")
+    close_database_connection(connection)
