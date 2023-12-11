@@ -100,7 +100,7 @@ def fetch_data_from_category(category, conn):
 
                 # Перевірка, чи такий title вже існує в базі даних
                 with conn.cursor() as cursor:
-                    cursor.execute("SELECT COUNT(*) FROM pgml.stopfakes_rus WHERE title = %s", (title,))
+                    cursor.execute("SELECT COUNT(*) FROM pgml.stopfakes_ru WHERE title = %s", (title,))
                     result = cursor.fetchone()
                     if result[0] > 0:
                         print(f'SKIPPED article from the {category.upper()} category on the page {page_number} because it is already in the database: {title}\n')
