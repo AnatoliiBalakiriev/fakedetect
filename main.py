@@ -13,11 +13,3 @@ if os.path.isfile(language_file_path):
     exec(open(language_file_path).read())
 else:
     st.write(f"No code found for language: {language}")
-
-# Очищення поля вводу при зміні мови
-if 'language' not in st.session_state:
-    st.session_state.language = ''
-
-if st.session_state.language != language:
-    st.session_state.language = language
-    input_string = ""
