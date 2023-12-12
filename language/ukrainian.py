@@ -235,7 +235,15 @@ if st.sidebar.button("RUN"):
             # Додати 'https://' назад до кожного посилання на зображення
             image_links = ['https://' + link for link in image_links]
             
-            st.markdown(f"<b>{dateparser.parse(date).strftime('%Y-%m')}</b>\n\nThe article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>", unsafe_allow_html=True)
+            try:
+                parsed_date = dateparser.parse(date)
+                formatted_date = parsed_date.strftime('%Y-%m')
+            except:
+                formatted_date = None
+            if formatted_date:
+                st.markdown(f"<b>{formatted_date}</b>\n\nThe article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"The article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>", unsafe_allow_html=True)
             st.markdown(f"<a href='{url}' target='_blank'><b>{title}</b></a>", unsafe_allow_html=True)
             st.markdown(f"<p>{article}</p>", unsafe_allow_html=True)  # Відформатований текст у параграфі
 
