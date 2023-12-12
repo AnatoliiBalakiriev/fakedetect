@@ -228,7 +228,7 @@ if st.sidebar.button("RUN"):
             image_links = images.split('https://')
 
             # Видалити перший пустий рядок, який з'являється після розділення
-            # image_links = image_links[1:]
+            image_links = image_links[1:]
 
             # Додати 'https://' назад до кожного посилання на зображення
             image_links = ['https://' + link for link in image_links]
