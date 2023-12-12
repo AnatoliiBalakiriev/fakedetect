@@ -241,7 +241,5 @@ if st.sidebar.button("RUN"):
             for image_link in image_links:
                 if is_url_accessible(image_link):
                     st.image(image_link)
-                else:
-                    st.markdown(f"The image at <a href='{image_link}' target='_blank'>{image_link}</a> is not accessible.", unsafe_allow_html=True)
                 
     close_database_connection(connection)
