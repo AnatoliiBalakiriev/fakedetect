@@ -5,6 +5,7 @@ from tqdm import tqdm
 import re
 import psycopg2
 import json
+from dateutil import parser
 
 # З'єднання з базою даних PostgreSQL
 # Функція для створення з'єднання з базою даних
@@ -191,7 +192,8 @@ def get_top_2_relevant_articles(conn, query):
                 article,
                 1 - (embed <=> (SELECT query_vector FROM request)) AS cosine_similarity,
                 url,
-                relative_images
+                relative_images,
+                date
             FROM pgml.stopfakes_uk
             ORDER BY cosine_similarity DESC
             LIMIT 2;
@@ -223,7 +225,7 @@ if st.sidebar.button("RUN"):
         top_2_relevant_articles = get_top_2_relevant_articles(connection, input_string)
     
         # Виведення результатів
-        for article_id, title, article, cosine_similarity, url, images in top_2_relevant_articles:
+        for article_id, title, article, cosine_similarity, url, images, date in top_2_relevant_articles:
             # Розділити рядок images за https://
             image_links = images.split('https://')
 
@@ -233,7 +235,7 @@ if st.sidebar.button("RUN"):
             # Додати 'https://' назад до кожного посилання на зображення
             image_links = ['https://' + link for link in image_links]
             
-            st.markdown(f"The article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>", unsafe_allow_html=True)
+            st.markdown(f"<b>{parser.parse(date).strftime("%Y-%m")}</b>\nThe article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>", unsafe_allow_html=True)
             st.markdown(f"<a href='{url}' target='_blank'><b>{title}</b></a>", unsafe_allow_html=True)
             st.markdown(f"<p>{article}</p>", unsafe_allow_html=True)  # Відформатований текст у параграфі
 
