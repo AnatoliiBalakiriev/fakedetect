@@ -231,6 +231,6 @@ if st.sidebar.button("RUN"):
 
             # Вивести посилання на зображення
             for image_link in image_links:
-                st.image(image_link)
+                st.markdown(image_link)
                 
     close_database_connection(connection)
