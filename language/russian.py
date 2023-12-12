@@ -213,7 +213,6 @@ if st.sidebar.button("RUN"):
     
         # Виведення результатів
         for article_id, article, cosine_similarity in top_2_relevant_articles:
-            formatted_article = f"<b>The Article:</b>\n\n\n<p>{article}</p>"
-            st.write(f"\n\nThe article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>")
-            st.markdown(formatted_article, unsafe_allow_html=True)  # Відформатований текст у параграфі
+            st.markdown(f"The article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>", unsafe_allow_html=True)
+            st.markdown(f"<p>{article}</p>", unsafe_allow_html=True)  # Відформатований текст у параграфі
     close_database_connection(connection)
