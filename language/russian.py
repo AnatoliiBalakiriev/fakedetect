@@ -190,7 +190,8 @@ def get_top_2_relevant_articles(conn, query):
                 title, 
                 article,
                 1 - (embed <=> (SELECT query_vector FROM request)) AS cosine_similarity,
-                url
+                url,
+                images
             FROM pgml.stopfakes_ru
             ORDER BY cosine_similarity DESC
             LIMIT 2;
@@ -214,8 +215,12 @@ if st.sidebar.button("RUN"):
         top_2_relevant_articles = get_top_2_relevant_articles(connection, input_string)
     
         # Виведення результатів
-        for article_id, title, article, cosine_similarity, url in top_2_relevant_articles:
+        for article_id, title, article, cosine_similarity, url, images in top_2_relevant_articles:
             st.markdown(f"The article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>", unsafe_allow_html=True)
             st.markdown(f"<a href='{url}' target='_blank'><b>{title}</b></a>", unsafe_allow_html=True)
             st.markdown(f"<p>{article}</p>", unsafe_allow_html=True)  # Відформатований текст у параграфі
+
+            # Виведення посилань на зображення
+            for image in images.split('\n'):
+                st.image(image)
     close_database_connection(connection)
