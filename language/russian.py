@@ -207,6 +207,14 @@ st.sidebar.header("Input")
 
 input_string = st.sidebar.text_area("Input your request and press the RUN button or press Enter", height=100)
 
+# Отримати сторінку за посиланням і перевірити її доступність
+def is_url_accessible(url):
+    try:
+        response = requests.head(url)
+        return response.status_code == 200  # Код 200 означає успішний запит
+    except requests.ConnectionError:
+        return False
+        
 if st.sidebar.button("RUN"):
     # Отримання оброблених документів з бази даних
     connection = create_database_connection()
@@ -229,9 +237,11 @@ if st.sidebar.button("RUN"):
             st.markdown(f"<a href='{url}' target='_blank'><b>{title}</b></a>", unsafe_allow_html=True)
             st.markdown(f"<p>{article}</p>", unsafe_allow_html=True)  # Відформатований текст у параграфі
 
-            # Вивести посилання на зображення
+            # Вивести посилання на зображення, які доступні
             for image_link in image_links:
-                st.markdown(image_link)
-                st.image(image_link)
+                if is_url_accessible(image_link):
+                    st.image(image_link)
+                else:
+                    st.markdown(f"The image at <a href='{image_link}' target='_blank'>{image_link}</a> is not accessible.", unsafe_allow_html=True)
                 
     close_database_connection(connection)
