@@ -220,7 +220,17 @@ if st.sidebar.button("RUN"):
             st.markdown(f"<a href='{url}' target='_blank'><b>{title}</b></a>", unsafe_allow_html=True)
             st.markdown(f"<p>{article}</p>", unsafe_allow_html=True)  # Відформатований текст у параграфі
 
-            # Виведення посилань на зображення
-            for image in images.split('\n'):
-                st.image(image)
+            # Розділити рядок images за https://
+            image_links = images.split('https://')
+
+            # Видалити перший пустий рядок, який з'являється після розділення
+            image_links = image_links[1:]
+
+            # Додати 'https://' назад до кожного посилання на зображення
+            image_links = ['https://' + link for link in image_links]
+
+            # Вивести посилання на зображення
+            for image_link in image_links:
+                st.image(image_link)
+                
     close_database_connection(connection)
