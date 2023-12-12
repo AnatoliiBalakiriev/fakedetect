@@ -192,7 +192,8 @@ def get_top_2_relevant_articles(conn, query):
                 article,
                 1 - (embed <=> (SELECT query_vector FROM request)) AS cosine_similarity,
                 url,
-                relative_images
+                relative_images,
+                date
             FROM pgml.stopfakes_sr
             ORDER BY cosine_similarity DESC
             LIMIT 2;
