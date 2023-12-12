@@ -213,5 +213,7 @@ if st.sidebar.button("RUN"):
     
         # Виведення результатів
         for article_id, article, cosine_similarity in top_2_relevant_articles:
-            st.write(f"\n\nThe article with id {article_id} has a similarity value {round(cosine_similarity, 3)}\n\n The Article:\n\n\n{article}")
+            formatted_article = f"<b>The Article:</b>\n\n\n<p>{article}</p>"
+            st.write(f"\n\nThe article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>")
+            st.markdown(formatted_article, unsafe_allow_html=True)  # Відформатований текст у параграфі
     close_database_connection(connection)
