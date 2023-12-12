@@ -5,6 +5,7 @@ from tqdm import tqdm
 import re
 import psycopg2
 import json
+import dateparser
 
 # З'єднання з базою даних PostgreSQL
 # Функція для створення з'єднання з базою даних
