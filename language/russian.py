@@ -212,7 +212,7 @@ def is_url_accessible(url):
     except requests.ConnectionError:
         return False
         
-if st.sidebar.button("RUN", key=run_button_key):
+if st.sidebar.button("RUN"):
     
     # Отримання оброблених документів з бази даних
     connection = create_database_connection()
