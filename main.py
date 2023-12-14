@@ -4,18 +4,21 @@ import streamlit as st
 languages = ["russian", "ukrainian", "english", "polish", "turkish", "italian", "dutch",
             "serbian", "german", "czech", "french", "bulgarian", "spanish", "romanian"]
 
-language = st.sidebar.selectbox("Select Language", languages)
+selected_language = st.sidebar.empty()  # Створення місця для вибору мови
 
-# Використовуйте кнопки для вибору мови
-if st.sidebar.button("ru"):
-    language = "russian"
-elif st.sidebar.button("ua"):
-    language = "ukrainian"
-# Повторіть це для інших мов
+# Створення кнопок для вибору мови
+for lang in languages:
+    if st.sidebar.button(lang):
+        selected_language.text(lang)  # Встановлення вибраної мови
+
+language = selected_language.text
 
 # Перевірка, чи існує файл для обраної мови
-language_file_path = os.path.join("language", f"{language}.py")
-if os.path.isfile(language_file_path):
-    exec(open(language_file_path).read())
+if language:
+    language_file_path = os.path.join("language", f"{language}.py")
+    if os.path.isfile(language_file_path):
+        exec(open(language_file_path).read())
+    else:
+        st.write(f"No code found for language: {language}")
 else:
-    st.write(f"No code found for language: {language}")
+    st.write("Please select a language")
