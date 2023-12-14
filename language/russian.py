@@ -212,39 +212,38 @@ def is_url_accessible(url):
     except requests.ConnectionError:
         return False
         
-if st.sidebar.button("RUN"):
-    # Отримання оброблених документів з бази даних
-    connection = create_database_connection()
-    
-    if connection:
-        top_2_relevant_articles = get_top_2_relevant_articles(connection, input_string)
-    
-        # Виведення результатів
-        for article_id, title, article, cosine_similarity, url, images, date in top_2_relevant_articles:
-            # Розділити рядок images за https://
-            image_links = images.split('https://')
+# Отримання оброблених документів з бази даних
+connection = create_database_connection()
 
-            # Видалити перший пустий рядок, який з'являється після розділення
-            image_links = image_links[1:]
+if connection:
+    top_2_relevant_articles = get_top_2_relevant_articles(connection, input_string)
 
-            # Додати 'https://' назад до кожного посилання на зображення
-            image_links = ['https://' + link for link in image_links]
+    # Виведення результатів
+    for article_id, title, article, cosine_similarity, url, images, date in top_2_relevant_articles:
+        # Розділити рядок images за https://
+        image_links = images.split('https://')
+
+        # Видалити перший пустий рядок, який з'являється після розділення
+        image_links = image_links[1:]
+
+        # Додати 'https://' назад до кожного посилання на зображення
+        image_links = ['https://' + link for link in image_links]
+        
+        try:
+            parsed_date = dateparser.parse(date)
+            formatted_date = parsed_date.strftime('%Y-%m')
+        except:
+            formatted_date = None
+        if formatted_date:
+            st.markdown(f"<b>{formatted_date}</b>\n\nThe article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"The article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>", unsafe_allow_html=True)
+        st.markdown(f"<a href='{url}' target='_blank'><b>{title}</b></a>", unsafe_allow_html=True)
+        st.markdown(f"<p>{article}</p>", unsafe_allow_html=True)  # Відформатований текст у параграфі
+
+        # Вивести посилання на зображення, які доступні
+        for image_link in image_links:
+            if is_url_accessible(image_link):
+                st.image(image_link)
             
-            try:
-                parsed_date = dateparser.parse(date)
-                formatted_date = parsed_date.strftime('%Y-%m')
-            except:
-                formatted_date = None
-            if formatted_date:
-                st.markdown(f"<b>{formatted_date}</b>\n\nThe article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>", unsafe_allow_html=True)
-            else:
-                st.markdown(f"The article with id <b>{article_id}</b> has a similarity value <b>{round(cosine_similarity, 3)}</b>", unsafe_allow_html=True)
-            st.markdown(f"<a href='{url}' target='_blank'><b>{title}</b></a>", unsafe_allow_html=True)
-            st.markdown(f"<p>{article}</p>", unsafe_allow_html=True)  # Відформатований текст у параграфі
-
-            # Вивести посилання на зображення, які доступні
-            for image_link in image_links:
-                if is_url_accessible(image_link):
-                    st.image(image_link)
-                
-    close_database_connection(connection)
+close_database_connection(connection)
