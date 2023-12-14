@@ -8,7 +8,13 @@ languages = ["russian", "ukrainian", "english", "polish", "turkish", "italian", 
 st.title("Fake Detection")
 st.sidebar.header("Input")
 input_string = st.sidebar.text_area("Input your request and press the RUN button or press Enter", height=100)
-st.sidebar.button("RUN")
+
+# Відобразити вибір мови
+language = st.sidebar.radio("Select Language", languages)
+language_file_path = os.path.join("language", f"{language}.py")
+
+# Генерувати унікальний ключ для кнопки RUN на основі вибраної мови
+run_button_key = f"RUN_{language}"
 
 # Відобразити вибір мови
 language = st.sidebar.radio("Select Language", languages)
