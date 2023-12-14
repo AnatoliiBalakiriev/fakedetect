@@ -204,6 +204,11 @@ def get_top_2_relevant_articles(conn, query):
 
     return top_2_relevant_articles
 
+st.title("Fake Detection")
+st.sidebar.header("Input")
+
+input_string = st.sidebar.text_area("Input your request and press the RUN button or press Enter", height=100)
+
 # Отримати сторінку за посиланням і перевірити її доступність
 def is_url_accessible(url):
     try:
