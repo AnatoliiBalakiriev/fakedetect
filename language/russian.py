@@ -133,20 +133,20 @@ def main():
         print("Could not establish a database connection. Exiting...")
         return
 
-    try:
-        # Збір даних з категорії "kontekst"
-        articles_data_kontekst = fetch_data_from_category("kontekst", connection)
-        if articles_data_kontekst:
-            insert_data(connection, articles_data_kontekst)
+    # try:
+    #     # Збір даних з категорії "kontekst"
+    #     articles_data_kontekst = fetch_data_from_category("kontekst", connection)
+    #     if articles_data_kontekst:
+    #         insert_data(connection, articles_data_kontekst)
 
-        # Збір даних з категорії "factcheck_for_facebook_ru"
-        articles_data_factcheck = fetch_data_from_category("factcheck_for_facebook_ru", connection)
-        if articles_data_factcheck:
-            insert_data(connection, articles_data_factcheck)
+    #     # Збір даних з категорії "factcheck_for_facebook_ru"
+    #     articles_data_factcheck = fetch_data_from_category("factcheck_for_facebook_ru", connection)
+    #     if articles_data_factcheck:
+    #         insert_data(connection, articles_data_factcheck)
 
-    finally:
+    # finally:
         # Завершення роботи та закриття з'єднання з базою даних
-        close_database_connection(connection)
+    close_database_connection(connection)
 
 if __name__ == '__main__':
     main()
