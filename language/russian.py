@@ -85,44 +85,44 @@ def fetch_article(url):
 
     return title, article_text, date, relative_urls_str, anchor_texts_str, relative_images_str, fakeness, source_url
 
-def fetch_data_from_category(category, conn):
-    articles_data = []
-    for page_number in tqdm(range(1, 2)):  # Смужка прогресу для сторінок
-        url = f'https://www.stopfake.org/ru/category/{category}/page/{page_number}/'
-        response = requests.get(url)
-        soup = BeautifulSoup(response.content, 'html.parser')
+# def fetch_data_from_category(category, conn):
+#     articles_data = []
+#     for page_number in tqdm(range(1, 2)):  # Смужка прогресу для сторінок
+#         url = f'https://www.stopfake.org/ru/category/{category}/page/{page_number}/'
+#         response = requests.get(url)
+#         soup = BeautifulSoup(response.content, 'html.parser')
 
-        article_number = 0
-        for article in soup.find_all('div', {'class': 'item-details'}):
-            link_tag = article.find('a', href=True)
-            if link_tag:
-                article_url = link_tag['href']
-                title, article_text, date, relative_urls, anchor_texts, relative_images, fakeness, source_url = fetch_article(article_url)
+#         article_number = 0
+#         for article in soup.find_all('div', {'class': 'item-details'}):
+#             link_tag = article.find('a', href=True)
+#             if link_tag:
+#                 article_url = link_tag['href']
+#                 title, article_text, date, relative_urls, anchor_texts, relative_images, fakeness, source_url = fetch_article(article_url)
 
-                # Перевірка, чи такий title вже існує в базі даних
-                with conn.cursor() as cursor:
-                    cursor.execute("SELECT COUNT(*) FROM pgml.stopfakes_ru WHERE title = %s", (title,))
-                    result = cursor.fetchone()
-                    if result[0] > 0:
-                        print(f'SKIPPED article from the {category.upper()} category on the page {page_number} because it is already in the database: {title}\n')
-                        continue
+#                 # Перевірка, чи такий title вже існує в базі даних
+#                 with conn.cursor() as cursor:
+#                     cursor.execute("SELECT COUNT(*) FROM pgml.stopfakes_ru WHERE title = %s", (title,))
+#                     result = cursor.fetchone()
+#                     if result[0] > 0:
+#                         print(f'SKIPPED article from the {category.upper()} category on the page {page_number} because it is already in the database: {title}\n')
+#                         continue
 
-                articles_data.append((
-                    title,
-                    article_text,
-                    article_url,
-                    date,
-                    relative_urls,
-                    source_url,
-                    anchor_texts,
-                    relative_images,
-                    fakeness,
-                ))
+#                 articles_data.append((
+#                     title,
+#                     article_text,
+#                     article_url,
+#                     date,
+#                     relative_urls,
+#                     source_url,
+#                     anchor_texts,
+#                     relative_images,
+#                     fakeness,
+#                 ))
                 
-                article_number += 1
-                print(f'PROCESSED article {article_number} from the {category.upper()} category on the page {page_number}: {title}\n')
+#                 article_number += 1
+#                 print(f'PROCESSED article {article_number} from the {category.upper()} category on the page {page_number}: {title}\n')
 
-    return articles_data
+#     return articles_data
 
 def main():
     
