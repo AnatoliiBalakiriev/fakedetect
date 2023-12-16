@@ -10,6 +10,6 @@ language = st.sidebar.selectbox("Select a language from 14 available:", language
 # Перевірка, чи існує файл для обраної мови
 language_file_path = os.path.join("language", f"{language}.py")
 if os.path.isfile(language_file_path):
-    exec(open(language_file_path).read())
+    exec(open(language_file_path, encoding="utf-8").read())
 else:
     st.write(f"No code found for language: {language}")
