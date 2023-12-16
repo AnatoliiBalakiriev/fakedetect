@@ -34,7 +34,7 @@ def close_database_connection(conn):
         
 def check_fakeness(article_text):
     # Перевірка наявності слова "Фейк" або "фейк" у тексті статті
-    if re.search(r'\bLažna|Lažna vest|Manipulacija|Lažna fotografija|Lažna video-snimka\b', article_text, re.IGNORECASE):
+    if re.search(r'\bFałszywe|fałszywe wiadomości|manipulacja|fałszywe zdjęcie|fałszywe wideo\b', article_text, re.IGNORECASE):
         return 1
     else:
         return 0
@@ -42,7 +42,7 @@ def check_fakeness(article_text):
 def insert_data(conn, data):
     # Запит на вставку даних в таблицю
     insert_query = """
-    INSERT INTO pgml.stopfakes_sr (title, article, url, date, relative_urls, source_url, anchor_texts, relative_images, fakeness)
+    INSERT INTO pgml.stopfakes_pl (title, article, url, date, relative_urls, source_url, anchor_texts, relative_images, fakeness)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
     """
     with conn.cursor() as cursor:
@@ -88,7 +88,7 @@ def fetch_article(url):
 def fetch_data_from_category(category, conn):
     articles_data = []
     for page_number in tqdm(range(1, 2)):  # Смужка прогресу для сторінок
-        url = f'https://www.stopfake.org/sr/category/{category}/page/{page_number}/'
+        url = f'https://www.stopfake.org/pl/category/{category}/page/{page_number}/'
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
 
@@ -101,7 +101,7 @@ def fetch_data_from_category(category, conn):
 
                 # Перевірка, чи такий title вже існує в базі даних
                 with conn.cursor() as cursor:
-                    cursor.execute("SELECT COUNT(*) FROM pgml.stopfakes_sr WHERE title = %s", (title,))
+                    cursor.execute("SELECT COUNT(*) FROM pgml.stopfakes_pl WHERE title = %s", (title,))
                     result = cursor.fetchone()
                     if result[0] > 0:
                         print(f'SKIPPED article from the {category.upper()} category on the page {page_number} because it is already in the database: {title}\n')
@@ -135,12 +135,12 @@ def main():
 
     try:
         # Збір даних з категорії "kontekst"
-        articles_data_kontekst = fetch_data_from_category("kontekst-sb", connection)
+        articles_data_kontekst = fetch_data_from_category("opis-sytuacji-pl", connection)
         if articles_data_kontekst:
             insert_data(connection, articles_data_kontekst)
 
         # Збір даних з категорії "factcheck_for_facebook_ru"
-        articles_data_factcheck = fetch_data_from_category("vesti-sr", connection)
+        articles_data_factcheck = fetch_data_from_category("informacje-pl", connection)
         if articles_data_factcheck:
             insert_data(connection, articles_data_factcheck)
 
@@ -155,14 +155,14 @@ if __name__ == '__main__':
 def create_embeddings_for_articles(conn):
     with conn.cursor() as cursor:
         # Отримання списку статей з бази даних
-        cursor.execute("SELECT id, title || article AS title_article FROM pgml.stopfakes_sr WHERE embed IS NULL;")
+        cursor.execute("SELECT id, title || article AS title_article FROM pgml.stopfakes_pl WHERE embed IS NULL;")
         articles = cursor.fetchall()
 
         for article_id, article in tqdm(articles, desc="Creating Embeddings"):
 
             # Оновлення запису в таблиці з вектором
             cursor.execute("""
-                UPDATE pgml.stopfakes_sr
+                UPDATE pgml.stopfakes_pl
                 SET embed = pgml.embed('intfloat/multilingual-e5-large', %s)::vector(1024)
                 WHERE id = %s;
             """, (article, article_id,))
@@ -194,7 +194,7 @@ def get_top_2_relevant_articles(conn, query):
                 url,
                 relative_images,
                 date
-            FROM pgml.stopfakes_sr
+            FROM pgml.stopfakes_pl
             ORDER BY cosine_similarity DESC
             LIMIT 2;
         """, (query,))
